@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.urls import reverse
 from django.utils.html import format_html
 
+
 from .models import Post, Category, Tag
 from .adminforms import PostAdminForm   # 自定义的form
 from blogsys.custom_site import custom_site     # 自定义site
@@ -109,6 +110,4 @@ class PostAdmin(admin.ModelAdmin):
             'all': ("https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js", ),
         }
         js = ("https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js", )
-
-
 
