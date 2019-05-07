@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.contrib.admin.models import LogEntry    # 日志记录
 from django.urls import reverse
 from django.utils.html import format_html
 
@@ -7,6 +8,9 @@ from .models import Post, Category, Tag
 from .adminforms import PostAdminForm   # 自定义的form
 from blogsys.custom_site import custom_site     # 自定义site
 
+from blogsys.base_admin import BaseOwnerAdmin
+
+
 
 class PostInline(admin.TabularInline):  # StackedInline样式与此不同
     fields = ('title', 'desc')
@@ -14,10 +18,10 @@ class PostInline(admin.TabularInline):  # StackedInline样式与此不同
     model = Post
 
 
-@admin.register(Category)
-class CategoryAdmin(admin.ModelAdmin):
+@admin.register(Category, site=custom_site)
+class CategoryAdmin(BaseOwnerAdmin):
     list_display = ('name', 'status', 'is_nav', 'created_time', 'post_count')
-    fields = ('name', 'status', 'is_nav', 'owner')
+    fields = ('name', 'status', 'is_nav')
 
     def post_count(self, obj):
         return obj.post_set.count()
@@ -26,22 +30,23 @@ class CategoryAdmin(admin.ModelAdmin):
     inlines = [PostInline, ]
 
 
-@admin.register(Tag)
-class TagAdmin(admin.ModelAdmin):
+@admin.register(Tag, site=custom_site)
+class TagAdmin(BaseOwnerAdmin):
     list_display = ('name', 'status', 'created_time')
-    fields = ('name', 'status', 'owner')
+    fields = ('name', 'status')
 
 
 class CategoryOwnerFilter(admin.SimpleListFilter):
     """ 自定义过滤器只显示当前用户分类  此前会显示所有分类"""
 
-    title = '分类过滤器'
+    title = '过滤器的title'
     parameter_name = 'owner_category'       # 查询时 URL 参数的名字
 
     def lookups(self, request, model_admin):
         return Category.objects.filter(owner=request.user).values_list('id', 'name')
         # return Category.objects.filter(owner=request.user).values_list('id', 'name')
 
+    # 重载queryset
     def queryset(self, request, queryset):
         category_id = self.value()
         if category_id:
@@ -50,7 +55,9 @@ class CategoryOwnerFilter(admin.SimpleListFilter):
 
 
 @admin.register(Post, site=custom_site)
-class PostAdmin(admin.ModelAdmin):
+# class PostAdmin(admin.ModelAdmin):
+class PostAdmin(BaseOwnerAdmin):
+
     form = PostAdminForm
     list_display = [
         'title', 'category', 'status',
@@ -67,7 +74,9 @@ class PostAdmin(admin.ModelAdmin):
 
     # 编辑页面
     # save_on_top = True                 # 保存、编辑、编辑并新建是否在顶部显示
-    exclude = ('owner',)
+
+    # exclude = ('owner',)               # 已经写在基类中
+
 
     fieldsets = (
         ('基础配置', {
@@ -97,13 +106,17 @@ class PostAdmin(admin.ModelAdmin):
         )
     operator.short_description = "操作"
 
-    def save_model(self, request, obj, form, change):
-        obj.owner = request.user
-        return super(PostAdmin, self).save_model(request, obj, form, change)
 
-    def get_queryset(self, request):
-        qs = super(PostAdmin, self).get_queryset(request)
-        return qs.filter(owner=request.user)
+    # 有了BaseOwnadmin
+    # # 保存的时候制定owner字段
+    # def save_model(self, request, obj, form, change):
+    #     obj.owner = request.user
+    #     return super(PostAdmin, self).save_model(request, obj, form, change)
+    #
+    # def get_queryset(self, request):
+    #     qs = super(PostAdmin, self).get_queryset(request)
+    #     return qs.filter(owner=request.user)
+
 
     class Media:
         css = {
@@ -111,3 +124,8 @@ class PostAdmin(admin.ModelAdmin):
         }
         js = ("https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js", )
 
+
+    @admin.register(LogEntry)
+    class LogEntryAdmin(admin.ModelAdmin):
+        list_display = ['object_repr', 'object_id', 'action_flag', 'user',
+                        'change_message']
