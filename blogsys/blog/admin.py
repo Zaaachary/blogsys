@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.contrib.admin.models import LogEntry    # 日志记录
 from django.urls import reverse
 from django.utils.html import format_html
 
@@ -6,6 +7,7 @@ from django.utils.html import format_html
 from .models import Post, Category, Tag
 from .adminforms import PostAdminForm   # 自定义的form
 from blogsys.custom_site import custom_site     # 自定义site
+from blogsys.base_admin import BaseOwnerAdmin
 
 
 class PostInline(admin.TabularInline):  # StackedInline样式与此不同
@@ -14,8 +16,8 @@ class PostInline(admin.TabularInline):  # StackedInline样式与此不同
     model = Post
 
 
-@admin.register(Category)
-class CategoryAdmin(admin.ModelAdmin):
+@admin.register(Category, site=custom_site)
+class CategoryAdmin(BaseOwnerAdmin):
     list_display = ('name', 'status', 'is_nav', 'created_time', 'post_count')
     fields = ('name', 'status', 'is_nav', 'owner')
 
@@ -26,8 +28,8 @@ class CategoryAdmin(admin.ModelAdmin):
     inlines = [PostInline, ]
 
 
-@admin.register(Tag)
-class TagAdmin(admin.ModelAdmin):
+@admin.register(Tag, site=custom_site)
+class TagAdmin(BaseOwnerAdmin):
     list_display = ('name', 'status', 'created_time')
     fields = ('name', 'status', 'owner')
 
@@ -50,7 +52,7 @@ class CategoryOwnerFilter(admin.SimpleListFilter):
 
 
 @admin.register(Post, site=custom_site)
-class PostAdmin(admin.ModelAdmin):
+class PostAdmin(BaseOwnerAdmin):
     form = PostAdminForm
     list_display = [
         'title', 'category', 'status',
@@ -97,17 +99,24 @@ class PostAdmin(admin.ModelAdmin):
         )
     operator.short_description = "操作"
 
-    def save_model(self, request, obj, form, change):
-        obj.owner = request.user
-        return super(PostAdmin, self).save_model(request, obj, form, change)
-
-    def get_queryset(self, request):
-        qs = super(PostAdmin, self).get_queryset(request)
-        return qs.filter(owner=request.user)
+    # 有了BaseOwnadmin
+    # # 保存的时候制定owner字段
+    # def save_model(self, request, obj, form, change):
+    #     obj.owner = request.user
+    #     return super(PostAdmin, self).save_model(request, obj, form, change)
+    #
+    # def get_queryset(self, request):
+    #     qs = super(PostAdmin, self).get_queryset(request)
+    #     return qs.filter(owner=request.user)
 
     class Media:
         css = {
             'all': ("https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js", ),
         }
         js = ("https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js", )
+
+    @admin.register(LogEntry)
+    class LogEntryAdmin(admin.ModelAdmin):
+        list_display = ['object_repr', 'object_id', 'action_flag', 'user',
+                        'change_message']
 
