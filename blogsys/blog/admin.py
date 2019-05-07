@@ -19,7 +19,7 @@ class PostInline(admin.TabularInline):  # StackedInline样式与此不同
 @admin.register(Category, site=custom_site)
 class CategoryAdmin(BaseOwnerAdmin):
     list_display = ('name', 'status', 'is_nav', 'created_time', 'post_count')
-    fields = ('name', 'status', 'is_nav', 'owner')
+    fields = ('name', 'status', 'is_nav')
 
     def post_count(self, obj):
         return obj.post_set.count()
@@ -31,19 +31,20 @@ class CategoryAdmin(BaseOwnerAdmin):
 @admin.register(Tag, site=custom_site)
 class TagAdmin(BaseOwnerAdmin):
     list_display = ('name', 'status', 'created_time')
-    fields = ('name', 'status', 'owner')
+    fields = ('name', 'status')
 
 
 class CategoryOwnerFilter(admin.SimpleListFilter):
     """ 自定义过滤器只显示当前用户分类  此前会显示所有分类"""
 
-    title = '分类过滤器'
+    title = '过滤器的title'
     parameter_name = 'owner_category'       # 查询时 URL 参数的名字
 
     def lookups(self, request, model_admin):
         return Category.objects.filter(owner=request.user).values_list('id', 'name')
         # return Category.objects.filter(owner=request.user).values_list('id', 'name')
 
+    # 重载queryset
     def queryset(self, request, queryset):
         category_id = self.value()
         if category_id:
@@ -52,6 +53,7 @@ class CategoryOwnerFilter(admin.SimpleListFilter):
 
 
 @admin.register(Post, site=custom_site)
+# class PostAdmin(admin.ModelAdmin):
 class PostAdmin(BaseOwnerAdmin):
     form = PostAdminForm
     list_display = [
@@ -69,7 +71,7 @@ class PostAdmin(BaseOwnerAdmin):
 
     # 编辑页面
     # save_on_top = True                 # 保存、编辑、编辑并新建是否在顶部显示
-    exclude = ('owner',)
+    # exclude = ('owner',)               # 已经写在基类中
 
     fieldsets = (
         ('基础配置', {
