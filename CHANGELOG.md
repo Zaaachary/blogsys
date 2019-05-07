@@ -6,3 +6,4 @@ master 出来的分支 add-admin
 
 抽取了Admin基类 从ModelAdmin继承
 包含model_save 和queryset方法
+

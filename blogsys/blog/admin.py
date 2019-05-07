@@ -7,7 +7,9 @@ from django.utils.html import format_html
 from .models import Post, Category, Tag
 from .adminforms import PostAdminForm   # 自定义的form
 from blogsys.custom_site import custom_site     # 自定义site
+
 from blogsys.base_admin import BaseOwnerAdmin
+
 
 
 class PostInline(admin.TabularInline):  # StackedInline样式与此不同
@@ -55,6 +57,7 @@ class CategoryOwnerFilter(admin.SimpleListFilter):
 @admin.register(Post, site=custom_site)
 # class PostAdmin(admin.ModelAdmin):
 class PostAdmin(BaseOwnerAdmin):
+
     form = PostAdminForm
     list_display = [
         'title', 'category', 'status',
@@ -71,7 +74,9 @@ class PostAdmin(BaseOwnerAdmin):
 
     # 编辑页面
     # save_on_top = True                 # 保存、编辑、编辑并新建是否在顶部显示
+
     # exclude = ('owner',)               # 已经写在基类中
+
 
     fieldsets = (
         ('基础配置', {
@@ -101,6 +106,7 @@ class PostAdmin(BaseOwnerAdmin):
         )
     operator.short_description = "操作"
 
+
     # 有了BaseOwnadmin
     # # 保存的时候制定owner字段
     # def save_model(self, request, obj, form, change):
@@ -111,14 +117,15 @@ class PostAdmin(BaseOwnerAdmin):
     #     qs = super(PostAdmin, self).get_queryset(request)
     #     return qs.filter(owner=request.user)
 
+
     class Media:
         css = {
             'all': ("https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js", ),
         }
         js = ("https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js", )
 
+
     @admin.register(LogEntry)
     class LogEntryAdmin(admin.ModelAdmin):
         list_display = ['object_repr', 'object_id', 'action_flag', 'user',
                         'change_message']
-
