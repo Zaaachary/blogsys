@@ -77,7 +77,6 @@ class PostAdmin(BaseOwnerAdmin):
 
     # exclude = ('owner',)               # 已经写在基类中
 
-
     fieldsets = (
         ('基础配置', {
             'description': '基础配置描述',
