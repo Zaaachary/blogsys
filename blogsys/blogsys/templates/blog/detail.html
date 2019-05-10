@@ -1,10 +1,13 @@
-<!DOCTYPE html>
-<html lang="zh-hans">
-<head>
-    <meta charset="UTF-8">
-    <title>detail</title>
-</head>
-<body>
+
+
+
+{% extends "./base.html" %}
+
+{% block title %}
+    {{ post.title }}
+{% endblock %}
+
+{% block main %}
     {% if post %}
     <h1>{{ post.title }}</h1>
     <div>
@@ -14,5 +17,4 @@
     <hr/>
     <p>{{ post.content }}</p>
     {% endif %}
-</body>
-</html>
+{% endblock %}
