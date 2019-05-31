@@ -11,7 +11,6 @@ from blogsys.custom_site import custom_site     # 自定义site
 from blogsys.base_admin import BaseOwnerAdmin
 
 
-
 class PostInline(admin.TabularInline):  # StackedInline样式与此不同
     fields = ('title', 'desc')
     extra = 1   # 控制额外多几个
@@ -77,7 +76,6 @@ class PostAdmin(BaseOwnerAdmin):
 
     # exclude = ('owner',)               # 已经写在基类中
 
-
     fieldsets = (
         ('基础配置', {
             'description': '基础配置描述',
@@ -102,10 +100,10 @@ class PostAdmin(BaseOwnerAdmin):
     def operator(self, obj):
         return format_html(
             '<a href="{}">编辑</a>',
+            # custom_site
             reverse('cus_admin:blog_post_change', args=(obj.id,))
         )
     operator.short_description = "操作"
-
 
     # 有了BaseOwnadmin
     # # 保存的时候制定owner字段
@@ -117,13 +115,11 @@ class PostAdmin(BaseOwnerAdmin):
     #     qs = super(PostAdmin, self).get_queryset(request)
     #     return qs.filter(owner=request.user)
 
-
     class Media:
         css = {
             'all': ("https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js", ),
         }
         js = ("https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js", )
-
 
     @admin.register(LogEntry)
     class LogEntryAdmin(admin.ModelAdmin):

@@ -1,0 +1,25 @@
+{% extends "./base.html" %}
+
+{% block title %}
+    {% if tag %}
+    标签列表页: {{ tag.name }}
+    {% elif category %}
+    分类列表页: {{ category.name }}
+    {% else %}
+    首页
+    {% endif %}
+{% endblock %}
+
+{% block main %}
+    {% if post %}
+    <h1>{{ post.title }}</h1>
+    <div>
+        <span>分类：{{ post.category.name }}</span>
+        <span>作者：{{ post.owner.username }}</span>
+    </div>
+    <hr/>
+    <p>
+        {{ post.content }}
+    </p>
+    {% endif %}
+{% endblock %}
