@@ -1,10 +1,13 @@
-
-
-
 {% extends "./base.html" %}
 
 {% block title %}
-    {{ post.title }}
+    {% if tag %}
+    标签列表页: {{ tag.name }}
+    {% elif category %}
+    分类列表页: {{ category.name }}
+    {% else %}
+    首页
+    {% endif %}
 {% endblock %}
 
 {% block main %}
@@ -15,6 +18,8 @@
         <span>作者：{{ post.owner.username }}</span>
     </div>
     <hr/>
-    <p>{{ post.content }}</p>
+    <p>
+        {{ post.content }}
+    </p>
     {% endif %}
 {% endblock %}
