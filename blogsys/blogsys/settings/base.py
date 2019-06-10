@@ -111,4 +111,10 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
-STATIC_URL = '/static/'
+# STATIC_ROOT = '/tmp/static' # 配置部署之后的静态资源路径
+
+STATIC_URL = '/static/'       # 配置页面上静态资源的起始路径 /static/css/base.css
+
+STATICFILES_DIRS = [          # 制定静态资源所在的目录
+    os.path.join(BASE_DIR, 'themes', THEME, "static"),
+]
