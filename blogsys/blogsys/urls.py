@@ -30,6 +30,7 @@ urlpatterns = [
     url(r'^tag/(?P<tag_id>\d+)/$', TagView.as_view(), name='tag-list'),
     # url(r'^post/(?P<post_id>\d+).html$', post_detail, name='post-detail'),
     # url(r'^post/(?P<pk>\d+).html$', PostDetailView.as_view(), name='post-detail'),
+
     url(r'^post/(?P<post_id>\d+).html$', PostDetailView.as_view(),
         name='post-detail'),
     url(r'^links/$', links, name='links'),
