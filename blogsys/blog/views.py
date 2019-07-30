@@ -1,3 +1,4 @@
+from django.db.models import Q  # 条件表达式
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 from django.views.generic import DetailView, ListView
@@ -128,3 +129,22 @@ def post_detail(request, post_id):
     context.update(Category.get_navs())
 
     return render(request, 'blog/detail.html', context=context)
+
+
+class SearchView(IndexView):
+    """搜索界面  主要重写了数据源"""
+    def get_context_data(self):
+        context = super().get_context_data()
+        context.update({
+            'keyword': self.request.GET.get('keyword', '')
+        })
+        return context
+    
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        keyword = self.request.GET.get('keyword',)
+        if not keyword:
+            return queryset
+        else:
+            return queryset.filter(Q(title__icontains=keyword)
+                | Q(desc__icontains=keyword))
