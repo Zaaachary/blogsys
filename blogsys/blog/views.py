@@ -146,5 +146,12 @@ class SearchView(IndexView):
         if not keyword:
             return queryset
         else:
-            return queryset.filter(Q(title__icontains=keyword)
-                | Q(desc__icontains=keyword))
+            return queryset.filter(Q(title__icontains=keyword) | Q(desc__icontains=keyword))
+
+
+class AuthorView(IndexView):
+    """通过/author/1/访问indexview 返回该作者的发布的文章 通过修改查询内容以实现"""
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        author_id = self.kwargs.get('owner_id')
+        return queryset.filter(owner_id=author_id)

@@ -70,7 +70,7 @@ class SideBar(models.Model):
 
     # @property
     def content_html(self):
-        """直接渲染模板"""
+        """直接渲染模板 该函数会在template中被调用"""
         from blog.models import Post
         from comment.models import Comment
 
@@ -78,6 +78,7 @@ class SideBar(models.Model):
         if self.display_type == self.DISPLAY_HTML:
             result = self.content
         elif self.display_type == self.DISPLAY_LATEST:
+            # 如果显示类型是 最新内容
             context = {
                 'posts': Post.latest_posts()
             }
