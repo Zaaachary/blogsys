@@ -1,4 +1,5 @@
 {% extends "./base.html" %}
+{% load comment_block %}
 
 {% block title %}
     {% if tag %}
@@ -22,29 +23,29 @@
         {{ post.content }}
     </p>
     {% endif %}
-    <div class="comment">
-        <form class="form-group" action="/comment/" method="POST" >
-            {% csrf_token %}
-            <input name="target" type="hidden" value="{{ request.path }}"/>
-            {{ comment_form }}
-            <input type="submit" value="写好辽！">
-        </form>
+    <!--request.path 传入标签 变成里面的target-->
+    {% comment_block request.path %}
+    <!--<div class="comment">-->
+        <!--<form class="form-group" action="/comment/" method="POST" >-->
+            <!--{% csrf_token %}-->
+            <!--<input name="target" type="hidden" value="{{ request.path }}"/>-->
+            <!--{{ comment_form }}-->
+            <!--<input type="submit" value="写好辽！">-->
+        <!--</form>-->
 
-        <!--评论列表-->
-        <ul class="list-group">
-            {% for comment in comment_list %}
-            <li class="list-group-item">
-                <div class="nickname">
-                    <a href="{{ comment.website }}">{{ comment.nickname }}</a>
-                        <span>{{ comment.created_time }}</span>
-                </div>
-                <div class="comment-content">
-                    {{ comment.content }}
-                </div>
-            </li>
-            {% endfor %}
-        </ul>
-    </div>
-
-
+        <!--&lt;!&ndash;评论列表&ndash;&gt;-->
+        <!--<ul class="list-group">-->
+            <!--{% for comment in comment_list %}-->
+            <!--<li class="list-group-item">-->
+                <!--<div class="nickname">-->
+                    <!--<a href="{{ comment.website }}">{{ comment.nickname }}</a>-->
+                        <!--<span>{{ comment.created_time }}</span>-->
+                <!--</div>-->
+                <!--<div class="comment-content">-->
+                    <!--{{ comment.content }}-->
+                <!--</div>-->
+            <!--</li>-->
+            <!--{% endfor %}-->
+        <!--</ul>-->
+    <!--</div>-->
 {% endblock %}

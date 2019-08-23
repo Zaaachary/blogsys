@@ -5,8 +5,8 @@ from django.views.generic import DetailView, ListView
 
 from .models import Post, Category, Tag
 from config.models import SideBar, Link
-from comment.forms import CommentForm
-from comment.models import Comment
+# from comment.forms import CommentForm
+# from comment.models import Comment
 
 class CommonViewMixin:
     def get_context_data(self, **kwargs):
@@ -40,7 +40,7 @@ class CommonViewMixin:
 
 class IndexView(CommonViewMixin, ListView):
     queryset = Post.latest_posts()
-    paginate_by = 2
+    paginate_by = 5
     context_object_name = 'post_list'
     template_name = 'blog/list.html'
 
@@ -92,13 +92,14 @@ class PostDetailView(CommonViewMixin, DetailView):
     context_object_name = 'post'
     pk_url_kwarg = 'post_id'
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context.update({
-            'comment_form': CommentForm,
-            'comment_list': Comment.get_by_target(self.request.path),
-        })
-        return context
+    # # 抽象了评论模块组件 此处不需要
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     context.update({
+    #         'comment_form': CommentForm,
+    #         'comment_list': Comment.get_by_target(self.request.path),
+    #     })
+    #     return context
 
 
 def post_list(request, category_id=None, tag_id=None):
