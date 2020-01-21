@@ -26,16 +26,16 @@
                     </li>
                     {% endfor %}
                 </ul>
-                <form class="form-inline my-2 my-lg-0" action="GET">
-                    <input class="form-control mr-sm-2" type="search" placeholder="Search"
-                        aria-label="Search">
+                <form class="form-inline my-2 my-lg-0" action='/search/' method='GET'>
+                    <input class="form-control mr-sm-2" type="search" name='keyword' placeholder="Search"
+                        aria-label="Search" value="{{ keyword }}">
                     <button class="btn btn-outline-success" type="submit">搜索</button>
                 </form>
             </div>
         </nav>
         <div class="jumbotron">
             <h1 class="display-4">妙妙屋大厅</h1>
-            <p class="lead">基于 Django 的多人博客系统</p>
+            <p class="lead">基于 Django 的博客系统</p>
         </div>
     </div>
     <div class="container main">
